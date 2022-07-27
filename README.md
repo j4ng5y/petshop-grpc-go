@@ -1,6 +1,6 @@
 # Petshop gRPC
 
-This is a fun little project that implements the petshop api example via gRPC/Go.
+This is a fun little project that implements the [petshop api](https://petstore.swagger.io/) example via gRPC/Go.
 
 Currently, only the UserService is implemented.
 
