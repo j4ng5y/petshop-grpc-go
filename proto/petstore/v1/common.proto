@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package petstore.v1;
+
+option go_package = "github.com/paynearme/petshop-grpc-go/internal/petstore/v1";
+
+enum ReponseCode {
+    ResponseCode_UNDEFINED = 0;
+    ResponseCode_SUCCESSFUL = 200;
+    ResponseCode_INVALID_VALUE = 400;
+    ResponseCode_NOT_FOUND = 404;
+    ResponseCode_INVALID_INPUT = 405;
+}
+
+message Response {
+    ReponseCode code = 1;
+    string type = 2;
+    string message = 3;
+}

@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package petstore.v1;
+
+import "petstore/v1/common.proto";
+
+option go_package = "github.com/paynearme/petshop-grpc-go/internal/petstore/v1";
+
+service PetService {
+    rpc UploadImage(petstore.v1.UploadImageRequest) returns (petstore.v1.Response) {};
+    rpc CreatePet(petstore.v1.Pet) returns (petstore.v1.Response) {};
+    rpc UpdatePet(petstore.v1.Pet) returns (petstore.v1.Response) {};
+    rpc DeletePet(petstore.v1.Pet) returns (petstore.v1.Response) {};
+    rpc FindPet(petstore.v1.FindPetRequest) returns (petstore.v1.FindPetResponse) {};
+}
+
+message UploadImageRequest{
+    int64 petId = 1;
+    string additionalMetadata = 2;
+    bytes file = 3;
+}
+
+message FindPetRequest {
+    oneof FindPet_OneOf {
+        ByStatus byStatus = 1;
+        ByStatus byId = 2;
+        ByTags byTags = 3 [deprecated = true];
+    }
+
+    message ByStatus {
+        PetStatus status = 1;
+    }
+    message ById {
+        int64 petId = 1;
+    }
+    message ByTags {
+        repeated string tags = 1;
+    }
+}
+
+message FindPetResponse {
+    oneof FindPetResponse_OneOf {
+        FindPetSuccessful pets = 1;
+        petstore.v1.Response error =2;
+    }
+
+    message FindPetSuccessful {
+        repeated petstore.v1.Pet pets = 1;
+    }
+}
+
+message Category {
+    int64 id = 1;
+    string name = 2;
+}
+
+message Tag {
+    int64 id = 1;
+    string name = 2;
+}
+
+message Pet {
+    int64 id = 1;
+    petstore.v1.Category category = 2;
+    repeated string photoUrls = 3;
+    repeated Tag tags = 4;
+    petstore.v1.PetStatus status = 5;
+}
+
+enum PetStatus {
+    PetStatus_UNDEFINED = 0;
+    PetStatus_AVAILABLE = 1;
+    PetStatus_PENDING = 2;
+    PetStatus_SOLD = 3;
+}

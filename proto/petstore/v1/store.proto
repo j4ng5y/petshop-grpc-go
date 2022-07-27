@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package petstore.v1;
+
+import "petstore/v1/common.proto";
+
+option go_package = "github.com/paynearme/petshop-grpc-go/internal/petstore/v1";
+
+service OrderService {
+    rpc CreateOrder(petstore.v1.Order) returns (petstore.v1.CreateOrderResponse) {};
+    rpc DeleteOrder(petstore.v1.DeleteOrderRequest) returns (petstore.v1.Response) {};
+    rpc GetOrder(petstore.v1.GetOrderRequest) returns (petstore.v1.GetOrderResponse) {};
+    rpc GetInventory(petstore.v1.GetInventoryRequest) returns (petstore.v1.GetInventoryRequest) {};
+}
+
+message CreateOrderResponse {
+    oneof PlaceOrderResponse_OneOf {
+        petstore.v1.Order order = 1;
+        petstore.v1.Response error = 2;
+    }
+}
+
+message DeleteOrderRequest {
+    int64 id = 1;
+}
+
+message GetOrderRequest {
+    oneof GetOrderRequest_OneOf {
+        ById byId = 1;
+    }
+
+    message ById {
+        int64 id = 1;
+    }
+}
+
+message GetOrderResponse {
+    oneof GetOrderResponse_OneOf {
+        petstore.v1.Order order = 1;
+        petstore.v1.Response error = 2;
+    }
+}
+
+message GetInventoryRequest {}
+
+import "petstore/v1/pet.proto";
+
+message GetInventoryResponse {
+    repeated petstore.v1.Pet inventory = 1;
+}
+
+message Order {
+    int64 id = 1;
+    int64 petId = 2;
+    int32 quantity = 3;
+    string shipDate = 4;
+    petstore.v1.OrderStatus status = 5;
+    bool complete = 6;
+
+
+}
+
+enum OrderStatus {
+    OrderStatus_UNDEFINED = 0;
+    OrderStatus_PLACED = 1;
+    OrderStatus_APPROVED = 2;
+    OrderStatus_DELIVERED = 3;
+}

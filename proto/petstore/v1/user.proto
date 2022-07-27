@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package petstore.v1;
+
+import "petstore/v1/common.proto";
+
+option go_package = "github.com/paynearme/petshop-grpc-go/internal/petstore/v1";
+
+service UserService {
+    rpc CreateUser(petstore.v1.CreateUserRequest) returns (petstore.v1.Response) {};
+    rpc GetUser(petstore.v1.GetUserRequest) returns (petstore.v1.GetUserResponse) {};
+    rpc UpdateUser(petstore.v1.User) returns (petstore.v1.Response) {};
+    rpc DeleteUser(petstore.v1.User) returns (petstore.v1.Response) {};
+    rpc Login(petstore.v1.LoginRequest) returns (petstore.v1.LoginResponse) {};
+    rpc Logout(petstore.v1.LogoutRequest) returns (petstore.v1.Response) {};
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+message LoginResponse {
+    oneof LoginResponse_OneOf {
+        LoginSuccessful successful = 1;
+        petstore.v1.Response error = 2;
+    }
+
+    message LoginSuccessful {
+        string tokenExpires = 1;
+        int32 rateLimit = 2;
+    }
+}
+message LogoutRequest {}
+
+message CreateUserRequest {
+    oneof CreateUserRequest_OneOf {
+        petstore.v1.User user = 1;
+        WithArray withArray = 2;
+        WithArray withList = 3;
+    }
+
+    message WithArray {
+        repeated petstore.v1.User users = 1;
+    }
+}
+
+message GetUserRequest {
+    oneof GetUserRequest_OneOf {
+        ByUsername byUsername = 1;
+    }
+
+    message ByUsername {
+        string username = 1;
+    }
+}
+
+message GetUserResponse {
+    oneof GetUserResponse_OneOf {
+        petstore.v1.User user = 1;
+        petstore.v1.Response error = 2;
+    }
+}
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    string firstName = 3;
+    string lastName = 4;
+    string email = 5;
+    string password = 6;
+    string phoneNumber = 7;
+    petstore.v1.UserStatus userStatus = 8;
+}
+
+enum UserStatus {
+    UserStatus_UNDEFINED = 0;
+    UserStatus_ACTIVE = 1;
+    UserStatus_INACTIVE = 2;
+}
